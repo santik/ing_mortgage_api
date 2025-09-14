@@ -1,0 +1,13 @@
+server:
+  servletPath: /api
+mortgage:
+  rates:
+    - maturityPeriod: 15
+      interestRate: 3.5
+      lastUpdate: 2025-01-01T00:00:00Z
+    - maturityPeriod: 20
+      interestRate: 4.0
+      lastUpdate: 2025-01-01T00:00:00Z
+    - maturityPeriod: 30
+      interestRate: 4.5
+      lastUpdate: 2025-01-01T00:00:00Z
