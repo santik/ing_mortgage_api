@@ -2,7 +2,6 @@ package com.ing.service;
 
 import com.ing.model.MortgageRateDb;
 import com.ing.mortgage.model.MortgageCheckRequest;
-import com.ing.mortgage.model.MortgageRate;
 import com.ing.repository.MortgageRateRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

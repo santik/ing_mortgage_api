@@ -3,7 +3,6 @@ package com.ing;
 import com.ing.mortgage.model.ErrorResponse;
 import com.ing.mortgage.model.MortgageCheckRequest;
 import com.ing.mortgage.model.MortgageCheckResponse;
-import com.ing.mortgage.model.MortgageRatesResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -56,7 +55,7 @@ class MortgageCheckIT {
         log.info("Response: {}", response);
 
         // Assert
-        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(true, response.getBody().getFeasible());
     }
 
