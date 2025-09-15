@@ -72,24 +72,15 @@ components:
       type: object
       properties:
         loanValue:
-          type: number
-          format: double
-          example: 1000.00
-          minimum: 0.0
+          $ref: '#/components/schemas/Amount'
         maturityPeriod:
           type: integer
           example: 30
           minimum: 1
         income:
-          type: number
-          format: double
-          example: 1000.00
-          minimum: 0.0
+          $ref: '#/components/schemas/Amount'
         homeValue:
-          type: number
-          format: double
-          example: 1000.00
-          minimum: 0.0
+          $ref: '#/components/schemas/Amount'
       required:
         - income
         - maturityPeriod
@@ -102,9 +93,7 @@ components:
           type: boolean
           example: true
         monthlyCosts:
-          type: number
-          format: double
-          example: 1000.00
+          $ref: '#/components/schemas/Amount'
         errorCodes:
           type: array
           items:
@@ -112,6 +101,7 @@ components:
             enum:
               - INSUFFICIENT_INCOME
               - HIGH_LOAN_TO_VALUE
+              - CURRENCY_MISMATCH
         traceId:
             type: string
             format: uuid
@@ -119,6 +109,22 @@ components:
       required:
         - feasible
         - monthlyCosts
+    Amount:
+      type: object
+      properties:
+        amount:
+          type: number
+          format: double
+          example: 1000.00
+          minimum: 0.0
+        currency:
+          type: string
+          enum:
+            - USD
+            - EUR
+      required:
+        - amount
+        - currency
     ErrorResponse:
       type: object
       properties:

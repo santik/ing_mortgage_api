@@ -1,6 +1,7 @@
 package com.ing.service;
 
 import com.ing.model.MortgageRateDb;
+import com.ing.mortgage.model.Amount;
 import com.ing.mortgage.model.MortgageCheckRequest;
 import com.ing.repository.MortgageRateRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -77,19 +78,19 @@ class InterestRatesServiceTest {
 
     @Test
     void testCalculateMonthlyCosts_ValidInput() {
-        var amount = BigDecimal.valueOf(200000.0);
+        var amount = Amount.builder().amount(BigDecimal.valueOf(200000.0)).currency(Amount.CurrencyEnum.EUR).build();
         var request = new MortgageCheckRequest(amount, 20, amount, amount);
 
         var interestRate = BigDecimal.valueOf(5.0);
         var result = interestRatesService.calculateMonthlyCosts(request, interestRate);
 
         var expected = BigDecimal.valueOf(10443.26);
-        assertEquals(expected, result.setScale(2, RoundingMode.HALF_UP));
+        assertEquals(expected, result.getAmount().setScale(2, RoundingMode.HALF_UP));
     }
 
     @Test
     void testCalculateMonthlyCosts_ZeroInterestRate() {
-        var amount = BigDecimal.valueOf(100000.0);
+        var amount = Amount.builder().amount(BigDecimal.valueOf(100000.0)).currency(Amount.CurrencyEnum.EUR).build();
         var request = new MortgageCheckRequest(amount, 10, amount, amount);
 
         var interestRate = BigDecimal.ZERO;
@@ -97,12 +98,12 @@ class InterestRatesServiceTest {
 
         // If interest rate is zero, monthly payment is principal divided by months
         var expected = 10000.0;
-        assertEquals(BigDecimal.valueOf(expected).setScale(2, RoundingMode.HALF_UP), result.setScale(2, RoundingMode.HALF_UP));
+        assertEquals(BigDecimal.valueOf(expected).setScale(2, RoundingMode.HALF_UP), result.getAmount().setScale(2, RoundingMode.HALF_UP));
     }
 
     @Test
     void testCalculateMonthlyCosts_NullInterestRate() {
-        var amount = BigDecimal.valueOf(50000.0);
+        var amount = Amount.builder().amount(BigDecimal.valueOf(50000.0)).currency(Amount.CurrencyEnum.EUR).build();
         var request = new MortgageCheckRequest(amount, 5, amount, amount);
 
         BigDecimal interestRate = null;
@@ -139,7 +140,12 @@ class InterestRatesServiceTest {
     @Test
     void testGetInterestRate_ValidRequest_ReturnsCorrectRate() {
         Mockito.when(mortgageRateRepository.getCurrentMortgageRates()).thenReturn(rates);
-        MortgageCheckRequest request = new MortgageCheckRequest(BigDecimal.valueOf(100000), 10, BigDecimal.valueOf(100000), BigDecimal.valueOf(100000));
+        MortgageCheckRequest request = new MortgageCheckRequest(
+                Amount.builder().amount(BigDecimal.valueOf(100000)).currency(Amount.CurrencyEnum.EUR).build(),
+                10,
+                Amount.builder().amount(BigDecimal.valueOf(100000)).currency(Amount.CurrencyEnum.EUR).build(),
+                Amount.builder().amount(BigDecimal.valueOf(100000)).currency(Amount.CurrencyEnum.EUR).build()
+        );
         BigDecimal result = interestRatesService.getInterestRate(request);
         assertEquals(rate2.interestRate(), result);
     }
@@ -147,7 +153,12 @@ class InterestRatesServiceTest {
     @Test
     void testGetInterestRate_LessThanLowest_ReturnsLowestRate() {
         Mockito.when(mortgageRateRepository.getCurrentMortgageRates()).thenReturn(rates);
-        MortgageCheckRequest request = new MortgageCheckRequest(BigDecimal.valueOf(100000), 2, BigDecimal.valueOf(100000), BigDecimal.valueOf(100000));
+        MortgageCheckRequest request = new MortgageCheckRequest(
+                Amount.builder().amount(BigDecimal.valueOf(100000)).currency(Amount.CurrencyEnum.EUR).build(),
+                2,
+                Amount.builder().amount(BigDecimal.valueOf(100000)).currency(Amount.CurrencyEnum.EUR).build(),
+                Amount.builder().amount(BigDecimal.valueOf(100000)).currency(Amount.CurrencyEnum.EUR).build()
+        );
         BigDecimal result = interestRatesService.getInterestRate(request);
         assertEquals(rate1.interestRate(), result);
     }
@@ -155,7 +166,12 @@ class InterestRatesServiceTest {
     @Test
     void testGetInterestRate_GreaterThanAll_ReturnsLastRate() {
         Mockito.when(mortgageRateRepository.getCurrentMortgageRates()).thenReturn(rates);
-        MortgageCheckRequest request = new MortgageCheckRequest(BigDecimal.valueOf(100000), 20, BigDecimal.valueOf(100000), BigDecimal.valueOf(100000));
+        MortgageCheckRequest request = new MortgageCheckRequest(
+                Amount.builder().amount(BigDecimal.valueOf(100000)).currency(Amount.CurrencyEnum.EUR).build(),
+                20,
+                Amount.builder().amount(BigDecimal.valueOf(100000)).currency(Amount.CurrencyEnum.EUR).build(),
+                Amount.builder().amount(BigDecimal.valueOf(100000)).currency(Amount.CurrencyEnum.EUR).build()
+        );
         BigDecimal result = interestRatesService.getInterestRate(request);
         assertEquals(rate3.interestRate(), result);
     }
@@ -163,7 +179,11 @@ class InterestRatesServiceTest {
     @Test
     void testGetInterestRate_EmptyRates_ThrowsException() {
         Mockito.when(mortgageRateRepository.getCurrentMortgageRates()).thenReturn(List.of());
-        MortgageCheckRequest request = new MortgageCheckRequest(BigDecimal.valueOf(100000), 10, BigDecimal.valueOf(100000), BigDecimal.valueOf(100000));
+        MortgageCheckRequest request = new MortgageCheckRequest(
+                Amount.builder().amount(BigDecimal.valueOf(100000)).currency(Amount.CurrencyEnum.EUR).build(),
+                10,
+                Amount.builder().amount(BigDecimal.valueOf(100000)).currency(Amount.CurrencyEnum.EUR).build(),
+                Amount.builder().amount(BigDecimal.valueOf(100000)).currency(Amount.CurrencyEnum.EUR).build());
         assertThrows(IllegalStateException.class, () -> interestRatesService.getInterestRate(request));
     }
 }

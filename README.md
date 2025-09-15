@@ -23,6 +23,11 @@ The mortgage feasibility check applies the following business rules:
 - **Error Code:** `INSUFFICIENT_INCOME` if violated.
 - **Purpose:** Ensures the mortgage is affordable based on income.
 
+### Same Currency
+- **Rule:** The currency of the loan must match the currency of the home value and income.
+- **Error Code:** `CURRENCY_MISMATCH` if violated.
+- **Purpose:** Avoids complications from currency conversion.
+
 These rules are modular and can be extended for additional business requirements.
 
 ## Project Structure
@@ -61,6 +66,8 @@ Run all tests with:
 ```bash
 ./mvnw test
 ```
+Or look at [github actions](https://github.com/santik/ing_mortgage_api/actions) for CI results.
+
 
 ## Configuration
 - Application settings: `src/main/resources/application.yaml`

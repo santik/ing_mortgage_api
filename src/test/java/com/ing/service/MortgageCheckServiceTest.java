@@ -2,6 +2,7 @@ package com.ing.service;
 
 import com.ing.businessrules.RuleResult;
 import com.ing.businessrules.RulesEngine;
+import com.ing.mortgage.model.Amount;
 import com.ing.mortgage.model.MortgageCheckRequest;
 import com.ing.mortgage.model.MortgageCheckResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,12 +34,13 @@ class MortgageCheckServiceTest {
         when(rulesEngine.evaluateRules(request)).thenReturn(
                 List.of(new RuleResult(true, null), new RuleResult(true, null)));
         when(interestRatesService.getInterestRate(request)).thenReturn(BigDecimal.valueOf(2.5));
-        when(interestRatesService.calculateMonthlyCosts(request, BigDecimal.valueOf(2.5))).thenReturn(BigDecimal.valueOf(1000.0));
+        when(interestRatesService.calculateMonthlyCosts(request, BigDecimal.valueOf(2.5)))
+                .thenReturn(Amount.builder().amount(BigDecimal.valueOf(1000.0)).currency(Amount.CurrencyEnum.EUR).build());
 
         MortgageCheckResponse response = mortgageCheckService.checkMortgage(request);
 
         assertTrue(response.getFeasible());
-        assertEquals(BigDecimal.valueOf(1000.0), response.getMonthlyCosts());
+        assertEquals(BigDecimal.valueOf(1000.0), response.getMonthlyCosts().getAmount());
     }
 
     @Test

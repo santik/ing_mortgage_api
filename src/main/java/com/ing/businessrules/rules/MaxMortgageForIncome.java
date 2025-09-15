@@ -21,8 +21,8 @@ public class MaxMortgageForIncome implements MortgageBusinessRule {
      */
     @Override
     public RuleResult applyRule(com.ing.mortgage.model.MortgageCheckRequest mortgageCheckRequest) {
-        var maxMortgageAmount = mortgageCheckRequest.getIncome().multiply(BigDecimal.valueOf(MAX_INCOME_MULTIPLIER));
-        boolean passed = mortgageCheckRequest.getLoanValue().compareTo(maxMortgageAmount) <= 0;
+        var maxMortgageAmount = mortgageCheckRequest.getIncome().getAmount().multiply(BigDecimal.valueOf(MAX_INCOME_MULTIPLIER));
+        boolean passed = mortgageCheckRequest.getLoanValue().getAmount().compareTo(maxMortgageAmount) <= 0;
         if (passed) {
             return new RuleResult(true, null);
         }

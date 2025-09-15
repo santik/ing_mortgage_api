@@ -1,6 +1,7 @@
 package com.ing.service;
 
 import com.ing.model.MortgageRateDb;
+import com.ing.mortgage.model.Amount;
 import com.ing.mortgage.model.MortgageCheckRequest;
 import com.ing.repository.MortgageRateRepository;
 import lombok.RequiredArgsConstructor;
@@ -49,25 +50,30 @@ public class InterestRatesService {
      * @param interestRate the annual interest rate
      * @return the calculated monthly payment
      */
-    public BigDecimal calculateMonthlyCosts(MortgageCheckRequest mortgageCheckRequest, BigDecimal interestRate) {
+    public Amount calculateMonthlyCosts(MortgageCheckRequest mortgageCheckRequest, BigDecimal interestRate) {
 
-        var principal = mortgageCheckRequest.getLoanValue();
+        var principal = mortgageCheckRequest.getLoanValue().getAmount();
         int termMonths = mortgageCheckRequest.getMaturityPeriod();
         var monthlyInterestRate = interestRate.divide(BigDecimal.valueOf(100 * 12), 10, RoundingMode.HALF_UP);
 
+        BigDecimal amount;
         if (monthlyInterestRate.compareTo(BigDecimal.ZERO) == 0) {
-            return principal.divide(BigDecimal.valueOf(termMonths), RoundingMode.HALF_UP);
+            amount = principal.divide(BigDecimal.valueOf(termMonths), RoundingMode.HALF_UP);
+        } else {
+
+            BigDecimal onePlusIToTheT = (BigDecimal.ONE.add(monthlyInterestRate)).pow(termMonths);
+            BigDecimal numerator = monthlyInterestRate.multiply(onePlusIToTheT);
+            BigDecimal denominator = onePlusIToTheT.subtract(BigDecimal.ONE);
+            amount = principal
+                    .multiply(numerator)
+                    .divide(denominator, RoundingMode.HALF_UP)
+                    .setScale(2, RoundingMode.HALF_UP);
         }
 
-        BigDecimal onePlusIToTheT = (BigDecimal.ONE.add(monthlyInterestRate)).pow(termMonths);
-        BigDecimal numerator = monthlyInterestRate.multiply(onePlusIToTheT);
-        BigDecimal denominator = onePlusIToTheT.subtract(BigDecimal.ONE);
-        BigDecimal monthlyPayment = principal
-                .multiply(numerator)
-                .divide(denominator, RoundingMode.HALF_UP)
-                .setScale(2, RoundingMode.HALF_UP);
-
-        return monthlyPayment;
+        return Amount.builder()
+                .amount(amount)
+                .currency(mortgageCheckRequest.getLoanValue().getCurrency())
+                .build();
     }
 
     /**

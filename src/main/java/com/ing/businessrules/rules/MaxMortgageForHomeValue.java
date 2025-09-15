@@ -21,8 +21,8 @@ public class MaxMortgageForHomeValue implements MortgageBusinessRule {
      */
     @Override
     public RuleResult applyRule(MortgageCheckRequest mortgageCheckRequest) {
-        var maxMortgageAmount = mortgageCheckRequest.getHomeValue();
-        BigDecimal loanValue = mortgageCheckRequest.getLoanValue();
+        var maxMortgageAmount = mortgageCheckRequest.getHomeValue().getAmount();
+        BigDecimal loanValue = mortgageCheckRequest.getLoanValue().getAmount();
         boolean passed = loanValue.compareTo(maxMortgageAmount) <= 0;
         if (passed) {
             return new RuleResult(true, null);

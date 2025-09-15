@@ -1,5 +1,6 @@
 package com.ing.businessrules.rules;
 
+import com.ing.mortgage.model.Amount;
 import com.ing.mortgage.model.MortgageCheckRequest;
 import org.junit.jupiter.api.Test;
 
@@ -12,12 +13,12 @@ class MaxMortgageForIncomeTest {
     @Test
     void shouldReturnTrueWhenLoanValueEqualsMaxMortgage() {
         MaxMortgageForIncome rule = new MaxMortgageForIncome();
-        double income = 50000.0;
-        double loanValue = income * 4.0;
+        var income = Amount.builder().amount(BigDecimal.valueOf(50000.0)).currency(Amount.CurrencyEnum.EUR).build();
+        var loanValue = income.getAmount().multiply(BigDecimal.valueOf(4.0));
         MortgageCheckRequest request = MortgageCheckRequest.builder()
-                .income(BigDecimal.valueOf(income))
-                .loanValue(BigDecimal.valueOf(loanValue))
-                .homeValue(BigDecimal.valueOf(300000.0))
+                .income(income)
+                .loanValue(Amount.builder().amount(loanValue).currency(Amount.CurrencyEnum.EUR).build())
+                .homeValue(Amount.builder().amount(BigDecimal.valueOf(300000.0)).currency(Amount.CurrencyEnum.EUR).build())
                 .maturityPeriod(20)
                 .build();
         assertTrue(rule.applyRule(request).passed());
@@ -26,12 +27,13 @@ class MaxMortgageForIncomeTest {
     @Test
     void shouldReturnFalseWhenLoanValueExceedsMaxMortgage() {
         MaxMortgageForIncome rule = new MaxMortgageForIncome();
-        double income = 50000.0;
-        double loanValue = income * 4.0 + 1;
+        var income = Amount.builder().amount(BigDecimal.valueOf(50000.0)).currency(Amount.CurrencyEnum.EUR).build();
+        var loanValue = income.getAmount().multiply(BigDecimal.valueOf(4.0)).add(BigDecimal.valueOf(1.0));
+
         MortgageCheckRequest request = MortgageCheckRequest.builder()
-                .income(BigDecimal.valueOf(income))
-                .loanValue(BigDecimal.valueOf(loanValue))
-                .homeValue(BigDecimal.valueOf(300000.0))
+                .income(income)
+                .loanValue(Amount.builder().amount(loanValue).currency(Amount.CurrencyEnum.EUR).build())
+                .homeValue(Amount.builder().amount(BigDecimal.valueOf(300000.0)).currency(Amount.CurrencyEnum.EUR).build())
                 .maturityPeriod(20)
                 .build();
         assertFalse(rule.applyRule(request).passed());
@@ -41,9 +43,9 @@ class MaxMortgageForIncomeTest {
     void shouldReturnTrueForZeroLoanValue() {
         MaxMortgageForIncome rule = new MaxMortgageForIncome();
         MortgageCheckRequest request = MortgageCheckRequest.builder()
-                .income(BigDecimal.valueOf(50000.0))
-                .loanValue(BigDecimal.valueOf(0.0))
-                .homeValue(BigDecimal.valueOf(300000.0))
+                .income(Amount.builder().amount(BigDecimal.valueOf(50000.0)).currency(Amount.CurrencyEnum.EUR).build())
+                .loanValue(Amount.builder().amount(BigDecimal.valueOf(0.0)).currency(Amount.CurrencyEnum.EUR).build())
+                .homeValue(Amount.builder().amount(BigDecimal.valueOf(300000.0)).currency(Amount.CurrencyEnum.EUR).build())
                 .maturityPeriod(20)
                 .build();
         assertTrue(rule.applyRule(request).passed());
@@ -53,9 +55,9 @@ class MaxMortgageForIncomeTest {
     void shouldReturnTrueForNegativeLoanValue() {
         MaxMortgageForIncome rule = new MaxMortgageForIncome();
         MortgageCheckRequest request = MortgageCheckRequest.builder()
-                .income(BigDecimal.valueOf(50000.0))
-                .loanValue(BigDecimal.valueOf(-1000.0))
-                .homeValue(BigDecimal.valueOf(300000.0))
+                .income(Amount.builder().amount(BigDecimal.valueOf(50000.0)).currency(Amount.CurrencyEnum.EUR).build())
+                .loanValue(Amount.builder().amount(BigDecimal.valueOf(-1000.0)).currency(Amount.CurrencyEnum.EUR).build())
+                .homeValue(Amount.builder().amount(BigDecimal.valueOf(300000.0)).currency(Amount.CurrencyEnum.EUR).build())
                 .maturityPeriod(20)
                 .build();
         assertTrue(rule.applyRule(request).passed());
@@ -65,9 +67,9 @@ class MaxMortgageForIncomeTest {
     void shouldReturnTrueForZeroIncomeAndZeroLoanValue() {
         MaxMortgageForIncome rule = new MaxMortgageForIncome();
         MortgageCheckRequest request = MortgageCheckRequest.builder()
-                .income(BigDecimal.valueOf(0.0))
-                .loanValue(BigDecimal.valueOf(0.0))
-                .homeValue(BigDecimal.valueOf(300000.0))
+                .income(Amount.builder().amount(BigDecimal.valueOf(0.0)).currency(Amount.CurrencyEnum.EUR).build())
+                .loanValue(Amount.builder().amount(BigDecimal.valueOf(0.0)).currency(Amount.CurrencyEnum.EUR).build())
+                .homeValue(Amount.builder().amount(BigDecimal.valueOf(300000.0)).currency(Amount.CurrencyEnum.EUR).build())
                 .maturityPeriod(20)
                 .build();
         assertTrue(rule.applyRule(request).passed());
@@ -77,9 +79,9 @@ class MaxMortgageForIncomeTest {
     void shouldReturnFalseForZeroIncomeAndPositiveLoanValue() {
         MaxMortgageForIncome rule = new MaxMortgageForIncome();
         MortgageCheckRequest request = MortgageCheckRequest.builder()
-                .income(BigDecimal.valueOf(0.0))
-                .loanValue(BigDecimal.valueOf(1000.0))
-                .homeValue(BigDecimal.valueOf(300000.0))
+                .income(Amount.builder().amount(BigDecimal.valueOf(0.0)).currency(Amount.CurrencyEnum.EUR).build())
+                .loanValue(Amount.builder().amount(BigDecimal.valueOf(1000.0)).currency(Amount.CurrencyEnum.EUR).build())
+                .homeValue(Amount.builder().amount(BigDecimal.valueOf(300000.0)).currency(Amount.CurrencyEnum.EUR).build())
                 .maturityPeriod(20)
                 .build();
         assertFalse(rule.applyRule(request).passed());

@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("${server.servletPath}" + "/v1")
+@RequestMapping("${server.servletPath}")
 @RequiredArgsConstructor
 @Slf4j
 public class MortgageController implements DefaultApi {
