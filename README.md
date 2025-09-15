@@ -59,7 +59,7 @@ The application will start on the default port (usually 8080).
 - `GET /v1/interest-rates` - Retrieve current interest rates
 - `POST /v1/mortgage-check` - Check mortgage feasibility
 
-See `src/main/resources/mortgage_v100.yaml` for the OpenAPI specification.
+See `src/main/resources/api/producer/MortgageAPIv1.yaml` for the OpenAPI specification.
 
 ## Testing
 Run all tests with:
