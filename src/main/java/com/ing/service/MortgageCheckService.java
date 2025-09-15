@@ -30,12 +30,12 @@ public class MortgageCheckService {
     public MortgageRatesResponse getAllInterestRates() {
         var allRates = interestRatesService.getAllInterestRates();
 
-        var rates = (List<MortgageRate>) allRates.stream().map(rate -> MortgageRate.builder()
+        var rates = allRates.stream().map(rate -> MortgageRate.builder()
                 .maturityPeriod(rate.maturityPeriod())
                 .interestRate(rate.interestRate())
                 .build()).toList();
 
-        return MortgageRatesResponse.builder().rates(rates).traceId(UUID.fromString(MDC.get(X_TRACE_ID))).build();
+        return MortgageRatesResponse.builder().rates((List<MortgageRate>) rates).traceId(UUID.fromString(MDC.get(X_TRACE_ID))).build();
     }
 
     /**

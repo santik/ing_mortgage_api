@@ -5,6 +5,8 @@ info:
 paths:
   /interest-rates:
     get:
+      operationId: getInterestRates
+      description: Retrieve current mortgage interest rates
       summary: Get a list of current interest rates
       parameters:
         - $ref: '#/components/parameters/TraceId'
@@ -15,8 +17,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/MortgageRatesResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
   /mortgage-check:
     post:
+      operationId: checkMortgage
+      description: Check mortgage feasibility and calculate monthly costs
       summary: Calculate mortgage feasibility and monthly costs
       parameters:
         - $ref: '#/components/parameters/TraceId'
@@ -33,6 +43,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/MortgageCheckResponse'
+        '400':
+          description: Invalid request parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 components:
   parameters:
     TraceId:

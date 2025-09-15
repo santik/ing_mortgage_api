@@ -35,7 +35,7 @@ class MortgageControllerTest {
         MortgageRatesResponse mockResponse = MortgageRatesResponse.builder().build();
         when(mortgageCheckService.getAllInterestRates()).thenReturn(mockResponse);
 
-        ResponseEntity<MortgageRatesResponse> response = mortgageController.interestRatesGet(xTraceId);
+        ResponseEntity<MortgageRatesResponse> response = mortgageController.getInterestRates(xTraceId);
 
         assertEquals(mockResponse, response.getBody());
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -49,7 +49,7 @@ class MortgageControllerTest {
         MortgageCheckResponse mockResponse = new MortgageCheckResponse();
         when(mortgageCheckService.checkMortgage(request)).thenReturn(mockResponse);
 
-        ResponseEntity<MortgageCheckResponse> response = mortgageController.mortgageCheckPost(request, xTraceId);
+        ResponseEntity<MortgageCheckResponse> response = mortgageController.checkMortgage(request, xTraceId);
 
         assertEquals(mockResponse, response.getBody());
         assertEquals(HttpStatus.OK, response.getStatusCode());

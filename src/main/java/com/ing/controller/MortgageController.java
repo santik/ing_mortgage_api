@@ -29,7 +29,7 @@ public class MortgageController implements DefaultApi {
    * @return a response entity containing all mortgage rates
    */
   @Override
-  public ResponseEntity<MortgageRatesResponse> interestRatesGet(UUID xTraceId) {
+  public ResponseEntity<MortgageRatesResponse> getInterestRates(UUID xTraceId) {
     log.info("Received request to get interest rates, x-trace-id: {}", xTraceId);
     return ResponseEntity.ok(mortgageCheckService.getAllInterestRates());
   }
@@ -42,7 +42,7 @@ public class MortgageController implements DefaultApi {
    * @return a response entity containing the mortgage check result
    */
   @Override
-  public ResponseEntity<MortgageCheckResponse> mortgageCheckPost(@Valid MortgageCheckRequest mortgageCheckRequest, UUID xTraceId) {
+  public ResponseEntity<MortgageCheckResponse> checkMortgage(@Valid MortgageCheckRequest mortgageCheckRequest, UUID xTraceId) {
     log.info("Received mortgage check request: {}, x-trace-id: {}", mortgageCheckRequest, xTraceId);
     return ResponseEntity.ok(mortgageCheckService.checkMortgage(mortgageCheckRequest));
   }
